@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Tra cứu Điểm thi Khảo thí Quốc gia - Hi.lng Education</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #2563eb;
+            --success: #059669;
+            --danger: #dc2626;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            
+            /* Kính mờ siêu thực đồng bộ trên toàn hệ thống */
+            --glass-bg: rgba(255, 255, 255, 0.42);
+            --glass-blur: blur(8px);
+            --glass-webkit-blur: blur(8px);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* -----------------------------------------------------------
+           HỆ THỐNG DÒNG NƯỚC MÀU CHẢY VÀ TRỘN SIÊU ẢO (LIQUID FLOW ULTRA)
+           ----------------------------------------------------------- */
+        .liquid-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .wave-stream {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background-image: 
+                radial-gradient(circle at 30% 40%, rgba(255, 69, 0, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 70% 30%, rgba(0, 210, 255, 0.45) 0%, transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(138, 43, 226, 0.45) 0%, transparent 50%),
+                radial-gradient(circle at 15% 75%, rgba(255, 20, 147, 0.4) 0%, transparent 40%),
+                linear-gradient(135deg, #eef2f6 0%, #dbeafe 100%);
+            background-size: 100% 100%;
+            animation: fluid-flow 18s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
+            filter: url(#liquid-filter) blur(8px);
+            opacity: 0.95;
+        }
+
+        @keyframes fluid-flow {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(-8%, 5%) scale(1.12) rotate(4deg); }
+            100% { transform: translate(-4%, -5%) scale(0.95) rotate(-2deg); }
+        }
+
+        /* HEADER */
+        header {
+            padding: 22px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-webkit-blur);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        .logo-text h1 {
+            color: #0f172a;
+            font-size: 17px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .logo-text p {
+            color: #334155;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .system-badge {
+            background: rgba(255, 255, 255, 0.7);
+            border: var(--glass-border);
+            padding: 7px 16px;
+            border-radius: 20px;
+            color: #0f172a;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .system-badge span {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            z-index: 5;
+        }
+
+        /* KHUNG CHỨA TRA CỨU KÍNH TRONG SUỐT VIỀN CHẢY MÀU */
+        .search-card {
+            position: relative;
+            background: var(--glass-bg) !important; 
+            backdrop-filter: var(--glass-blur) !important;
+            -webkit-backdrop-filter: var(--glass-webkit-blur) !important;
+            border: 2px solid transparent !important;
+            border-radius: 28px !important;
+            background-clip: padding-box !important;
+            width: 100%;
+            max-width: 650px;
+            padding: 45px;
+            box-shadow: 0 35px 75px rgba(15, 23, 42, 0.08),
+                        inset 0 1px 3px rgba(255, 255, 255, 0.7) !important;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .search-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -2px;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #ff4500, #ffaa00, #00d2ff, #8a2be2, #ff1493, #ff4500) !important;
+            background-size: 300% 100% !important;
+            animation: line-flow 6s linear infinite !important;
+            opacity: 0.65;
+        }
+
+        @keyframes line-flow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        .search-card.result-mode {
+            max-width: 950px;
+            padding: 45px;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .card-header h2 {
+            color: #0f172a;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            color: #1e293b;
+            font-size: 14.5px;
+            font-weight: 600;
+        }
+
+        /* -----------------------------------------------------------
+           ĐỊNH VỊ CHUẨN XÁC HAI NÚT ICON NHẬP THÔNG TIN
+           ----------------------------------------------------------- */
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field-box {
+            position: relative;
+            display: flex;
+            align-items: center; /* Giữ icon luôn căn giữa theo chiều dọc */
+        }
+
+        .input-field-box i {
+            position: absolute;
+            left: 20px; /* Khoảng cách cố định từ lề trái vào */
+            color: #475569;
+            font-size: 18px;
+            pointer-events: none; /* Tránh cản trở việc click vào ô input */
+            transition: color 0.3s, transform 0.3s;
+            z-index: 2;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5) !important;
+            border: 1px solid rgba(15, 23, 42, 0.15) !important;
+            border-radius: 14px !important;
+            padding: 16px 16px 16px 56px !important; /* Tạo khoảng trống 56px bên trái vừa vặn cho icon */
+            color: #0f172a !important;
+            font-size: 15px;
+            font-weight: 700;
+            outline: none;
+            backdrop-filter: var(--glass-blur);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+        }
+
+        .input-field:focus {
+            border-color: #2563eb !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18) !important;
+            transform: scale(1.005);
+        }
+
+        .input-field:focus + i {
+            color: #2563eb;
+            transform: scale(1.1);
+        }
+
+        /* NÚT SUBMIT DÒNG CHẢY */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(90deg, #0f172a, #2563eb, #8a2be2, #0f172a);
+            background-size: 300% 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            color: #ffffff;
+            font-size: 15.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.2);
+            transition: all 0.4s ease;
+            margin-top: 15px;
+        }
+
+        .btn-submit:hover {
+            background-position: 100% 0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35);
+        }
+
+        /* LOADING */
+        .loading-box {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .spinner {
+            width: 46px;
+            height: 46px;
+            border: 4px solid rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            border-top-color: #2563eb;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 18px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-box p {
+            color: #0f172a;
+            font-size: 14.5px;
+            font-weight: 700;
+        }
+
+        /* KẾT QUẢ TRA CỨU ĐIỂM */
+        .result-box {
+            display: none;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* THÔNG TIN THÍ SINH */
+        .student-profile {
+            background: rgba(255, 255, 255, 0.4);
+            border: var(--glass-border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 28px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .profile-label {
+            font-size: 11px;
+            color: #475569;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+        }
+
+        .profile-val {
+            font-size: 16px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* -----------------------------------------------------------
+           CẤU TRÚC DASHBOARD PHÂN TÁCH LÀM NỔI BẬT TỔNG ĐIỂM
+           ----------------------------------------------------------- */
+        .score-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.3fr; /* Tăng chiều rộng cột Tổng điểm */
+            gap: 22px;
+            margin-bottom: 35px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .score-dashboard { 
+                grid-template-columns: 1fr; 
+                gap: 16px;
+            }
+        }
+
+        .score-block {
+            background: rgba(255, 255, 255, 0.5);
+            border: var(--glass-border);
+            border-radius: 18px;
+            padding: 22px 18px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .score-block.active-glow {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+        }
+
+        /* ĐẶC CÁCH LÀM NỔI BẬT KHỐI TỔNG ĐIỂM (HOÀNH TRÁNG HƠN) */
+        .score-block.total-score {
+            padding: 30px 22px; /* Tăng độ dày lòng hộp */
+            background: rgba(255, 255, 255, 0.9) !important;
+            transform: scale(1.02); /* Phóng to nhẹ */
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.15) !important;
+        }
+
+        /* Đường viền Neon chạy vô cực bao quanh riêng khối Tổng điểm */
+        .score-block.total-score.active-glow::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 18px;
+            padding: 3px; /* Độ dày viền LED */
+            background: linear-gradient(90deg, #ff4500, #00d2ff, #8a2be2, #ff1493, #ff4500);
+            background-size: 300% 100%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: line-flow 5s linear infinite;
+        }
+
+        .score-block-title {
+            font-size: 12.5px;
+            color: #334155;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .total-score .score-block-title {
+            color: #8a2be2; /* Chuyển màu tiêu đề tổng điểm sang tím hoàng gia */
+            font-size: 13.5px;
+            letter-spacing: 0.8px;
+        }
+
+        .score-num {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        /* Hiệu ứng bừng sáng rực rỡ và đổi màu động cho con số Tổng điểm */
+        .total-score .score-num {
+            font-size: 52px; /* Phóng to số điểm */
+            background: linear-gradient(135deg, #8a2be2, #ff1493, #0066ff, #8a2be2);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: line-flow 6s linear infinite;
+            filter: drop-shadow(0 2px 8px rgba(138, 43, 226, 0.25)); /* Glow sáng chữ */
+        }
+
+        /* BẢNG ĐIỂM THÀNH PHẦN */
+        .score-table-title {
+            color: #0f172a;
+            font-size: 15.5px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-table-title i {
+            color: #2563eb;
+        }
+
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 14px;
+            overflow: hidden;
+            border: var(--glass-border);
+        }
+
+        .score-table th {
+            background: rgba(0, 0, 0, 0.03);
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .score-table td {
+            padding: 16px 18px;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .score-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .score-tag {
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 15.5px;
+        }
+
+        /* GIÁM SÁT QUY CHẾ */
+        .violation-status-box {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 14px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #065f46;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 35px;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .violation-status-box.has-violation {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #991b1b;
+        }
+
+        /* NÚT BACK */
+        .btn-back {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #475569;
+            padding: 13px 26px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .btn-back:hover {
+            background: #ffffff;
+            color: #0f172a;
+            transform: translateX(-2px);
+        }
+
+        /* LỖI */
+        .error-message {
+            color: #b91c1c;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-top: 18px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #334155;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-webkit-blur);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="liquid-bg">
+        <div class="wave-stream"></div>
+    </div>
+
+    <svg style="display:none">
+        <defs>
+            <filter id="liquid-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012 0.008" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="55" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <header>
+        <div class="logo-area">
+            <div class="logo-header">
+                <svg width="90" height="90" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 12px;">
+                    <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#0b3c5d" stroke-width="4"/>
+                    <circle cx="100" cy="100" r="88" fill="none" stroke="#328cc1" stroke-width="1.5" stroke-dasharray="5,3"/>
+                    <path d="M70,55 C100,45 100,45 130,55 C130,100 120,135 100,155 C80,135 70,100 70,55 Z" fill="#0b3c5d"/>
+                    <path d="M100,70 L106,85 L121,85 L109,94 L113,109 L100,100 L87,109 L91,94 L79,85 L94,85 Z" fill="#d9b310"/>
+                    <path d="M52,110 Q50,145 75,165 Q100,172 100,172" fill="none" stroke="#328cc1" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M148,110 Q150,145 125,165 Q100,172 100,172" fill="none" stroke="#328cc1" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="53" cy="118" r="4" fill="#328cc1"/><circle cx="58" cy="133" r="4" fill="#328cc1"/><circle cx="68" cy="148" r="4" fill="#328cc1"/>
+                    <circle cx="147" cy="118" r="4" fill="#328cc1"/><circle cx="142" cy="133" r="4" fill="#328cc1"/><circle cx="132" cy="148" r="4" fill="#328cc1"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <h1>CỔNG TRA CỨU KẾT QUẢ ĐÁNH GIÁ NĂNG LỰC</h1>
+                <p>Trung tâm Khảo thí năng lực Hi.lng</p>
+            </div>
+        </div>
+        <div class="system-badge">
+            <span></span>Cổng tra cứu chính thức
+        </div>
+    </header>
+
+    <main>
+        <div class="search-card" id="mainCard">
+            
+            <div id="searchInterface">
+                <div class="card-header">
+                    <h2>Tra cứu kết quả thi</h2>
+                    <p>Vui lòng nhập chính xác số báo danh và họ tên để xem điểm chi tiết</p>
+                </div>
+                
+                <div class="input-group">
+                    <label>Số báo danh (SBD)</label>
+                    <div class="input-field-box">
+                        <input type="text" id="sbdInput" class="input-field" placeholder="Ví dụ: DGNLKH2001" autocomplete="off">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <label>Họ và tên thí sinh</label>
+                    <div class="input-field-box">
+                        <input type="text" id="nameInput" class="input-field" placeholder="Ví dụ: NGUYỄN NGÔ HẢI LONG" autocomplete="off">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="executeSearch()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tra cứu điểm ngay
+                </button>
+
+                <div class="error-message" id="errorBox">
+                    <i class="fa-solid fa-circle-exclamation"></i> <span id="errorText">Thông tin không đúng hoặc không tồn tại kết quả.</span>
+                </div>
+            </div>
+
+            <div class="loading-box" id="loadingInterface">
+                <div class="spinner"></div>
+                <p>Đang truy xuất cổng dữ liệu Khảo thí, vui lòng đợi trong giây lát...</p>
+            </div>
+
+            <div class="result-box" id="resultInterface">
+                <div class="card-header" style="text-align: left; margin-bottom: 25px;">
+                    <h2 style="font-size: 22px;">KẾT QUẢ CHÍNH THỨC - KỲ THI ĐÁNH GIÁ NĂNG LỰC KHÓA HÈ (KHỐI 8)</h2>
+                    <p>Dữ liệu điểm thi chính thức được xác thực bởi Hội đồng Khảo thí</p>
+                </div>
+
+                <div class="student-profile">
+                    <div class="profile-item">
+                        <div class="profile-label">Họ và tên thí sinh</div>
+                        <div class="profile-val" id="resName"> </div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Số báo danh</div>
+                        <div class="profile-val" id="resSbd" style="color: #3b82f6;"> </div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Thời gian nộp bài</div>
+                        <div class="profile-val" id="resTime" style="font-size: 14px; font-weight: 400; color: #94a3b8;"> </div>
+                    </div>
+                </div>
+
+                <div class="score-dashboard">
+                    <div class="score-block">
+                        <div class="score-block-title">Phần A: Ngữ Văn</div>
+                        <div class="score-num" id="scoreA"> </div>
+                    </div>
+                    <div class="score-block">
+                        <div class="score-block-title">Phần B: Tiếng Anh</div>
+                        <div class="score-num" id="scoreB"> </div>
+                    </div>
+                    <div class="score-block total-score">
+                        <div class="score-block-title">Tổng điểm chung</div>
+                        <div class="score-num" id="scoreTotal"> </div>
+                    </div>
+                </div>
+
+                <div class="score-table-title">
+                    <i class="fa-solid fa-chart-bar"></i> Chi tiết điểm số các cấu phần bài thi
+                </div>
+                <table class="score-table">
+                    <thead>
+                        <tr>
+                            <th>Cấu phần bài thi</th>
+                            <th>Hình thức thi</th>
+                            <th>Kết quả đạt được</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PHẦN A. NGỮ VĂN</td>
+                            <td>Hoàn toàn tự luận</td>
+                            <td class="score-tag" id="tableScoreA">  / 50.0</td>
+                        </tr>
+                        <tr>
+                            <td>PHẦN B. TIẾNG ANH</td>
+                            <td>Kết hợp trắc nghiệm, tự luận và trả lời ngắn</td>
+                            <td class="score-tag" id="tableScoreB">  / 50.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="violation-status-box" id="violationBox">
+                    <i class="fa-solid fa-shield-halved" id="violationIcon"></i>
+                    <span id="violationText">Trạng thái: Không phát hiện vi phạm quy chế. Bài thi hợp lệ.</span>
+                </div>
+
+                <button class="btn-back" onclick="backToSearch()">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại tra cứu
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Hi.lng Education - Phòng Khảo thí năng lực thuộc Sở GD-ĐT Thành phố Hồ Chí Minh. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Đường dẫn Web App URL của Google Apps Script dùng để kéo dữ liệu điểm thi về
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6edNz_npOddltfC2Wel5mpxRpSvl0L2z8fw6Are3wBuIi3J0Tay6f0QyOsfkw40Kw/exec";
+
+function executeSearch() {
+    const sbd = document.getElementById('sbdInput').value.trim();
+    const name = document.getElementById('nameInput').value.trim();
+    const errorBox = document.getElementById('errorBox');
+    const errorText = document.getElementById('errorText');
+
+    if (!sbd || !name) {
+        errorText.innerText = "Vui lòng nhập đầy đủ cả Số báo danh và Họ tên.";
+        errorBox.style.display = 'flex';
+        return;
+    }
+    errorBox.style.display = 'none';
+
+    // Hiển thị màn hình xoay loading
+    document.getElementById('searchInterface').style.display = 'none';
+    document.getElementById('loadingInterface').style.display = 'block';
+
+    // Gọi API đến Google Apps Script (Sử dụng phương thức GET để tra cứu)
+    fetch(`${GOOGLE_SCRIPT_URL}?sbd=${encodeURIComponent(sbd)}&name=${encodeURIComponent(name)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Nếu tìm thấy, đổ dữ liệu vào bảng điểm
+                renderScoreData(data.studentData);
+            } else {
+                // Nếu không tìm thấy, hiển thị lỗi do Script trả về
+                showError(data.message || "Không tìm thấy thông tin thí sinh.");
+            }
+        })
+        .catch(err => {
+            showError("Lỗi kết nối cổng dữ liệu: " + err.toString());
+        });
+}
+
+        // Hàm đổ dữ liệu bài thi lên bảng điểm ĐGNL kính mờ
+        function renderScoreData(data) {
+            document.getElementById('loadingInterface').style.display = 'none';
+            
+            // Ép thẻ card phình to ra để hiển thị bảng điểm rộng rãi, hoành tráng
+            document.getElementById('mainCard').classList.add('result-mode');
+            document.getElementById('resultInterface').style.display = 'block';
+
+            // Gán dữ liệu định danh
+            document.getElementById('resName').innerText = data.name;
+            document.getElementById('resSbd').innerText = data.sbd;
+            document.getElementById('resTime').innerText = data.time;
+
+const elA = document.getElementById('scoreA');
+            const elB = document.getElementById('scoreB');
+            const elTotal = document.getElementById('scoreTotal');
+            const tblA = document.getElementById('tableScoreA');
+            const tblB = document.getElementById('tableScoreB');
+
+            // Thiết lập giá trị cho phần A
+            if (data.scoreA === 0) {
+                elA.innerText = "Chưa chấm";
+                elA.classList.add('not-graded');
+                tblA.innerText = "Đang cập nhật...";
+            } else {
+                elA.innerText = data.scoreA.toFixed(1);
+                elA.classList.remove('not-graded');
+                tblA.innerText = data.scoreA.toFixed(1) + " / 50.0";
+            }
+
+            // Thiết lập giá trị cho phần B
+            if (data.scoreB === 0) {
+                elB.innerText = "Chưa chấm";
+                elB.classList.add('not-graded');
+                tblB.innerText = "Đang cập nhật...";
+            } else {
+                elB.innerText = data.scoreB.toFixed(1);
+                elB.classList.remove('not-graded');
+                tblB.innerText = data.scoreB.toFixed(1) + " / 50.0";
+            }
+
+            // Thiết lập giá trị cho Tổng điểm chung
+            if (data.total === 0) {
+                elTotal.innerText = "Chưa chấm";
+                elTotal.classList.add('not-graded');
+            } else {
+                elTotal.innerText = data.total.toFixed(1);
+                elTotal.classList.remove('not-graded');
+            }
+
+            // Xử lý đồ họa cho khối thông báo vi phạm quy chế
+            const violationBox = document.getElementById('violationBox');
+            const violationIcon = document.getElementById('violationIcon');
+            const violationText = document.getElementById('violationText');
+
+            if (data.violations > 0) {
+                violationBox.classList.add('has-violation');
+                violationIcon.className = "fa-solid fa-triangle-exclamation";
+                violationText.innerText = `Cảnh báo quy chế: Hệ thống ghi nhận ${data.violations} lần thoát màn hình/vi phạm. Tình trạng: ${data.status}`;
+            } else {
+                violationBox.classList.remove('has-violation');
+                violationIcon.className = "fa-solid fa-shield-halved";
+                violationText.innerText = "Trạng thái: Không phát hiện vi phạm quy chế. Bài thi hợp lệ tuyệt đối.";
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loadingInterface').style.display = 'none';
+            document.getElementById('searchInterface').style.display = 'block';
+            const errorBox = document.getElementById('errorBox');
+            document.getElementById('errorText').innerText = message;
+            errorBox.style.display = 'flex';
+        }
+
+        function backToSearch() {
+            // Thu nhỏ khung card về lại nguyên bản của form đăng nhập tra cứu
+            document.getElementById('mainCard').classList.remove('result-mode');
+            document.getElementById('resultInterface').style.display = 'none';
+            document.getElementById('searchInterface').style.display = 'block';
+            
+            // Reset dữ liệu input
+            document.getElementById('sbdInput').value = "";
+            document.getElementById('nameInput').value = "";
+        }
+    </script>
+</body>
+</html>
